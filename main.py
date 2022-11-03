@@ -67,6 +67,7 @@ if __name__ == '__main__':
 4)Побеждает тот, кто раньше разгромит флот противника.
 Хорошей игры!
 """)
+    ship1 = Ship(-2, -2, 2, 1)
     print("Ваше поле:")
     player.draw_canvas()
     while True:
@@ -100,7 +101,7 @@ if __name__ == '__main__':
     print("Ваше поле после расстановки:")
     player.draw_canvas()
     print("Поле противника:")
-    computer.draw_canvas()
+    computer.draw_visible()
     print("Игра начинается! Первым ходит игрок!\n")
     player_shot_base = CoordinateDict()
     player_shot_base.update(0, 0, 0)
@@ -116,13 +117,13 @@ if __name__ == '__main__':
             else:
                 print("Вы уже стреляли в данную точку")
         print("Поле противника после выстрела:")
-        computer.draw_canvas()
+        computer.draw_visible()
         if computer.defeat():
             print("Победил игрок! Поздравляю")
             print("Ваше поле:")
             player.draw_canvas()
             print("Поле противника:")
-            computer.draw_canvas()
+            computer.draw_visible()
             break
         print("Стреляет компьютер", "\n", "Ваше поле:")
         computer_shot = computer.computer_shoot()
