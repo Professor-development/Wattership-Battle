@@ -1,5 +1,4 @@
-MAX_X = 6
-MAX_Y = 6
+SIZE = 6
 MAX_SHIP_TYPE = 3
 
 
@@ -8,10 +7,7 @@ class Dot:
         self.x = x
         self.y = y
 
-    def get(self):
-        return self.x, self.y
-
-    def __str__(self):
+    def __repr__(self):
         return f'Dot({self.x}, {self.y})'
 
     def __eq__(self, other):
@@ -19,40 +15,66 @@ class Dot:
 
 
 class Ship:
-    def __init__(self, x, y, rotate, ship_type):
-        self.x = x
-        self.y = y
+    def __init__(self, bow: Dot, rotate, ship_type):
+        self.bow = bow
         self.rotate = rotate
         self.ship_type = ship_type
-        self.own_coordinate = []
-        for i in range(0, ship_type):
-            if rotate == 0:
-                self.own_coordinate.append(Dot(x, y + i))
-            if rotate == 1:
-                self.own_coordinate.append(Dot(x + i, y))
+        self.lives = ship_type
+
+    @property
+    def dots(self):
+        ship_dots = [self.bow]
+        if self.rotate == 0:
+            for i in range(1, self.ship_type):
+                ship_dots.append(Dot(self.bow.x, self.bow.y + i))
+        elif self.rotate == 1:
+            for i in range(1, self.ship_type):
+                ship_dots.append(Dot(self.bow.x + i, self.bow.y))
+        return ship_dots
+
+    def shoten(self, shot):
+        return shot in self.dots
 
 
 class Board:
-    def __init__(self, hide=False):
-        self.hide = hide
-        self.canvas = [['O' for _ in range(MAX_X)] for _ in range(MAX_Y)]
+    def __init__(self, hid=False, size=SIZE):
+        self.size = size
+        self.hid = hid
+        self.count = 0
+        self.field = [["O"] * size for _ in range(size)]
+        self.busy = []
+        self.ships = []
 
-    def draw(self):
-        temp_str = ' '
-        for i in range(1, MAX_X+1):
-            temp_str += f' | {i}'
-        print(temp_str)
-        for i in range(1, MAX_X+1):
-            temp_str = ''
-            for j in range(0, MAX_Y+1):
-                if j == 0 and i < 10:
-                    temp_str += f'{i}'
-                else:
-                    temp_str += f' | {self.canvas[i-1][j-1]}'
-            print(temp_str)
+    def __str__(self):
+        res = ''
+        res += "  | 1 | 2 | 3 | 4 | 5 | 6 |"
+        for i, row in enumerate(self.field):
+            res += f"\n{i + 1} | " + " | ".join(row) + " |"
+        if self.hid:
+            res = res.replace('■', 'O')
+        return res
+
+    @staticmethod
+    def out(ship: Ship):
+        if 1 <= ship.dots[0].x <= SIZE and 1 <= ship.dots[0].y <= SIZE:
+            if ship.dots[-1].x <= SIZE and ship.dots[-1].y <= SIZE:
+                return False
+        else:
+            return True
+
+    def contour(self, ship: Ship):
+        pass
+
+    def add_ship(self, ship: Ship):
+        if self.count >= 7:
+            return "Достигнуто максимальное количество кораблей"
+        if not self.out(ship) and ship.dots not in self.busy:
+            self.busy.append(*ship.dots)
 
 
-d = Dot(1, 2)
-a = Dot(2, 3)
-c = Dot(4, 5)
-print([d, a, c])
+
+b = Board(False, SIZE)
+s = Ship(Dot(1, 2), 1, 3)
+print(*s.dots)
+print(s.dots)
+print(b)
