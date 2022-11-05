@@ -54,13 +54,8 @@ class Board:
             res = res.replace('■', 'O')
         return res
 
-    @staticmethod
-    def out(ship: Ship):
-        if 1 <= ship.dots[0].x <= SIZE and 1 <= ship.dots[0].y <= SIZE:
-            if ship.dots[-1].x <= SIZE and ship.dots[-1].y <= SIZE:
-                return False
-        else:
-            return True
+    def out(self, d: Dot):
+        return not ((0 < d.x <= self.size) and (0 < d.y <= self.size))
 
     def contour(self, ship: Ship):
         pass
@@ -68,9 +63,6 @@ class Board:
     def add_ship(self, ship: Ship):
         if self.count >= 7:
             return "Достигнуто максимальное количество кораблей"
-        if not self.out(ship) and ship.dots not in self.busy:
-            self.busy.append(*ship.dots)
-
 
 
 b = Board(False, SIZE)
